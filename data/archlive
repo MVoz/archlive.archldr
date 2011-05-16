@@ -1,0 +1,19 @@
+menuentry "Arch i686 (on loop 虚拟盘)" {
+	insmod part_msdos
+	insmod reiserfs
+	insmod loopback
+
+	#set img_label=winxp    #指定分区卷标label时使用
+	set img_file=Arch/Arch-i686.img   #设定查找标的
+	search --file --no-floppy --set=img_root /$img_file     #直接搜索loop文件
+	#search --label --no-floppy --set=img_root $img_label   #查找指定分区卷标label方式
+	#loopback loop0 (hd0,msdos9)/$img_file      #直接指定loop文件位置
+	probe $img_root -l --set=img_label          #探测分区卷标label ,目标label 不能有中文等无法识别的字符
+	#probe $img_root -u --set=img_root_uuid     #探测uuid 但测试发现因为大小写问题导致linux的by-uuid值不匹配
+	loopback loop0 ($img_root)/$img_file
+	set root=(loop0)
+	linux /boot/vmlinuz26 real_root=loop=/dev/disk/by-label/$img_label loopfile=$img_file  quiet 
+	#linux /boot/vmlinuz26 real_root=loop=/dev/disk/by-uuid/$img_root_uuid loopfile=$img_file  quiet 
+        # 此处还可以用if等判断， 来灵活使用label或者uuid， 欢迎高手指导
+	initrd /boot/kernel26-fallback.img
+}

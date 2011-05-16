@@ -1,0 +1,20 @@
+#!/bin/sh
+# Changed by Carbon Jiao
+# 2011-03-15
+# 检测、准备编译环境  Arch 专有
+# Checking and prepare the compiling envirment, special for Arch
+
+
+# mingw32-gcc 依赖于 mingw32-runtime  mingw32-binutils  mingw32-w32api  libmpc elfutils  gmp
+# i486-mingw32-strip 包含于mingw32-binutils
+
+if [ "x$(which i486-mingw32-gcc 2>/dev/null)" = "x" ]; then
+	echo "Installing mingw32-gcc..."
+	sudo pacman -Sf --noconfirm mingw32-gcc
+fi
+if [ "x$(which grub-mkimage 2>/dev/null)" = "x" ]; then
+	echo "Installing grub2..."
+	#sudo pacman -Sf --noconfirm grub2
+	sudo pacman -Sf --noconfirm grub2-common grub2-bios
+fi
+
